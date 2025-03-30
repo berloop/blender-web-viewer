@@ -1,0 +1,171 @@
+/* 
+ * Blender Web Preview CSS
+ * Styles for the web viewer
+ */
+
+ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    overflow: hidden;
+}
+
+#container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+#viewer {
+    flex: 1;
+    position: relative;
+}
+
+#viewer canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+#controls {
+    width: 300px;
+    background-color: #2a2a2a;
+    border-left: 1px solid #3a3a3a;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+#info-panel {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #3a3a3a;
+}
+
+#scene-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+#scene-stats {
+    font-size: 14px;
+    color: #aaaaaa;
+}
+
+.control-group {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #3a3a3a;
+}
+
+.control-group h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #cccccc;
+}
+
+.control-row {
+    display: flex;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+button {
+    background-color: #3e3e3e;
+    color: #e0e0e0;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-right: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #4e4e4e;
+}
+
+button:active {
+    background-color: #5e5e5e;
+}
+
+input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+input[type="range"] {
+    width: 100%;
+    background-color: #3e3e3e;
+    height: 5px;
+    border-radius: 2px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+#animation-time {
+    font-size: 14px;
+    color: #aaaaaa;
+}
+
+/* Loading indicator */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    #container {
+        flex-direction: column;
+    }
+    
+    #controls {
+        width: 100%;
+        height: 300px;
+        border-left: none;
+        border-top: 1px solid #3a3a3a;
+    }
+}
