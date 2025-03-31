@@ -1,9 +1,11 @@
-# Blender Web Preview Addon
 
-## Description
+
+
+## Introduction
 
 **BlendXWeb** is free and open-source Blender addon that allows you to effortlessly preview your Blender scenes in a web browser and export them as standalone web packages. With just a few clicks, you can convert your 3D scenes into interactive, web-accessible viewers, making it easier to share and showcase your work online.
 
+![BlendXWeb Preview](https://public-files.gumroad.com/0nc3yqm5nb7izzkl3g0oeyfq1o0f)
 
 
 ## Installation and Usage Guide
@@ -115,4 +117,4 @@ This addon is licensed under the MIT License. See LICENSE file for details.
 
 ## Support
 
-For issues, feature requests, or contributions, please visit the project repository.
+For issues, feature requests, or contributions, please visit the project repository or contact me directly at egretfx@gmail.com. Don't spam me or i will make you drink cocoa tea.
