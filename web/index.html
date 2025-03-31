@@ -20,7 +20,7 @@
     <style type="text/tailwindcss">
         @layer base {
             body {
-                @apply bg-gray-900 text-gray-100 overflow-hidden;
+                @apply bg-neutral-900 text-neutral-100 overflow-hidden;
                 font-family: "Host Grotesk", sans-serif;
                 font-weight: 400;
             }
@@ -36,15 +36,15 @@
             }
             
             input[type="range"] {
-                @apply w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer;
+                @apply w-full h-2 bg-neutral-700 rounded-lg appearance-none cursor-pointer;
             }
             
             input[type="range"]::-webkit-slider-thumb {
-                @apply appearance-none w-4 h-4 bg-indigo-500 rounded-full;
+                @apply appearance-none w-4 h-4 bg-neutral-500 rounded-full;
             }
             
             .controls-panel-mobile {
-                @apply fixed inset-0 z-20 bg-gray-800 overflow-auto;
+                @apply fixed inset-0 z-20 bg-neutral-800 overflow-auto;
                 display: none;
             }
             
@@ -91,77 +91,80 @@
         <!-- Viewer Area -->
         <div id="viewer" class="flex-1 bg-black relative">
             <!-- Loading Overlay -->
-            <div class="loading-overlay absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center z-50">
-                <div class="w-20 h-20 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                <div class="mt-4 text-gray-300 font-medium" id="loading-percentage">Loading...</div>
+            <div class="loading-overlay absolute inset-0 bg-black bg-opacity-80 flex flex-col items-center justify-center z-50">
+                <div class="w-12 h-12 border-4 border-neutral-500 border-t-transparent rounded-full animate-spin"></div>
+                <div class="mt-4 text-neutral-300 text-sm font-medium" id="loading-percentage">Loading...</div>
             </div>
         </div>
         
         <!-- Desktop Controls Panel -->
-        <div id="controls" class="hidden md:block w-full md:w-80 bg-gray-800 border-l border-gray-700 shadow-lg overflow-y-auto">
+        <div id="controls" class="hidden md:block w-full md:w-80 bg-neutral-950 border-l border-neutral-700 shadow-lg overflow-y-auto">
             <div class="p-4 space-y-6">
                 <!-- Header Info -->
                 <div>
-                    <h2 id="scene-title" class="text-xl font-bold text-white flex items-center">
-                        <i class="fa-solid fa-cube mr-2 text-indigo-400"></i>
+                    <!-- <span class="text-xs text-neutral-400">File Name</span> -->
+                    <h2 id="scene-title" class="text-sm font-bold text-white flex items-center">
+                        <i class="fa-solid fa-cube mr-2 text-neutral-400"></i>
                         <span>Blender Scene</span>
                     </h2>
-                    <div id="scene-stats" class="text-sm text-gray-400 mt-1"></div>
+                    <div id="scene-stats" class="text-sm text-neutral-400 mt-1"></div>
                 </div>
                 
                 <!-- Camera Controls -->
                 <div class="space-y-3">
-                    <h3 class="text-md font-semibold text-gray-300 flex items-center">
-                        <i class="fa-solid fa-camera mr-2 text-indigo-400"></i>
-                        Camera
+                    <h3 class="text-lg font-semibold text-neutral-300 flex items-center">
+                        <i class="fa-solid fa-camera mr-2 text-neutral-400"></i>
+                        Camera Controls
                     </h3>
                     <div>
-                        <button id="btn-reset-camera" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md flex justify-center items-center mb-2">
-                            <i class="fa-solid fa-rotate mr-2"></i>
-                            Reset Camera
-                        </button>
+                       
                         <div class="grid grid-cols-3 gap-2">
-                            <button id="btn-top-view" class="bg-gray-700 hover:bg-gray-600 text-white py-2 px-3 rounded-md flex items-center justify-center">
+                            <button id="btn-top-view" class="bg-neutral-900  rounded-md hover:bg-neutral-800 text-sm text-white py-2 px-3 rounded-md flex items-center justify-center">
                                 <i class="fa-solid fa-arrow-up mr-1"></i>
                                 Top
                             </button>
-                            <button id="btn-front-view" class="bg-gray-700 hover:bg-gray-600 text-white py-2 px-3 rounded-md flex items-center justify-center">
+                            <button id="btn-front-view" class="bg-neutral-900  rounded-md hover:bg-neutral-800 text-sm text-white py-2 px-3 rounded-md flex items-center justify-center">
                                 <i class="fa-solid fa-arrow-right mr-1"></i>
                                 Front
                             </button>
-                            <button id="btn-side-view" class="bg-gray-700 hover:bg-gray-600 text-white py-2 px-3 rounded-md flex items-center justify-center">
+                            <button id="btn-side-view" class="bg-neutral-900  rounded-md hover:bg-neutral-800 text-sm text-white py-2 px-3 rounded-md flex items-center justify-center">
                                 <i class="fa-solid fa-arrow-left mr-1"></i>
                                 Side
                             </button>
                         </div>
+                        
                     </div>
+                    <button id="btn-reset-camera" class="w-full bg-neutral-900  rounded-md hover:bg-neutral-800 text-sm text-white py-2 px-4 rounded-md flex justify-center items-center mb-2">
+                        <i class="fa-solid fa-rotate mr-2"></i>
+                        Reset Camera
+                    </button>
                 </div>
                 
                 <!-- Display Controls -->
                 <div class="space-y-3">
-                    <h3 class="text-md font-semibold text-gray-300 flex items-center">
-                        <i class="fa-solid fa-display mr-2 text-indigo-400"></i>
-                        Display
+                    <h3 class="text-lg font-semibold text-neutral-300 flex items-center">
+                        <i class="fa-solid fa-display mr-2 text-neutral-400"></i>
+                        Display Options
                     </h3>
                     <div class="space-y-2">
                         <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" id="toggle-wireframe" class="h-4 w-4 rounded text-indigo-600 focus:ring-indigo-500 focus:ring-opacity-25">
+                            <input type="checkbox" id="toggle-wireframe" class="h-4 w-4 rounded text-neutral-600 focus:ring-neutral-500 focus:ring-opacity-25">
                             <span class="flex items-center">
-                                <i class="fa-solid fa-cubes-stacked mr-2 text-gray-400"></i>
+                                <i class="fa-solid fa-cubes-stacked mr-2 text-neutral-400"></i>
                                 Wireframe
                             </span>
                         </label>
                         <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" id="toggle-grid" checked class="h-4 w-4 rounded text-indigo-600 focus:ring-indigo-500 focus:ring-opacity-25">
+                            <input type="checkbox" id="toggle-grid" checked class="h-4 w-4 rounded text-neutral-600 focus:ring-neutral-500 focus:ring-opacity-25">
                             <span class="flex items-center">
-                                <i class="fa-solid fa-border-all mr-2 text-gray-400"></i>
+                                <i class="fa-solid fa-border-all mr-2 text-neutral-400"></i>
                                 Grid
                             </span>
                         </label>
                         <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" id="toggle-lights" checked class="h-4 w-4 rounded text-indigo-600 focus:ring-indigo-500 focus:ring-opacity-25">
+                            <input type="checkbox" id="toggle-lights" checked class="h-4 w-4 rounded text-neutral-600 focus:ring-neutral-500 focus:ring-opacity-25">
                             <span class="flex items-center">
-                                <i class="fa-solid fa-lightbulb mr-2 text-gray-400"></i>
+                                <i class="fa-solid fa-lightbulb mr-2 text-neutral-400"></i>
                                 Lights
                             </span>
                         </label>
@@ -170,21 +173,21 @@
                 
                 <!-- Animation Controls -->
                 <div id="animation-controls" class="space-y-3">
-                    <h3 class="text-md font-semibold text-gray-300 flex items-center">
-                        <i class="fa-solid fa-play mr-2 text-indigo-400"></i>
+                    <h3 class="text-md font-semibold text-neutral-300 flex items-center">
+                        <i class="fa-solid fa-play mr-2 text-neutral-400"></i>
                         Animation
                     </h3>
                     <div class="space-y-3">
                         <div class="flex space-x-2">
-                            <button id="btn-play" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
+                            <button id="btn-play" class="flex-1 bg-orange-600 hover:bg-neutral-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
                                 <i class="fa-solid fa-play mr-1"></i>
                                 Play
                             </button>
-                            <button id="btn-pause" class="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
+                            <button id="btn-pause" class="flex-1 bg-teal-600 hover:bg-neutral-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
                                 <i class="fa-solid fa-pause mr-1"></i>
                                 Pause
                             </button>
-                            <button id="btn-stop" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
+                            <button id="btn-stop" class="flex-1 bg-rose-600 hover:bg-neutral-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
                                 <i class="fa-solid fa-stop mr-1"></i>
                                 Stop
                             </button>
@@ -192,21 +195,21 @@
                         <div>
                             <input type="range" id="animation-slider" min="0" max="100" value="0" class="w-full">
                         </div>
-                        <div id="animation-time" class="text-center text-sm text-gray-400">
+                        <div id="animation-time" class="text-center text-sm text-neutral-400">
                             0:00 / 0:00
                         </div>
                     </div>
                 </div>
                 
                 <!-- Attribution -->
-                <div class="pt-4 mt-4 border-t border-gray-700 text-xs text-gray-500">
+                <div class="pt-4 mt-4 border-t border-dashed border-neutral-700 text-xs text-neutral-500">
                     <div class="text-center mb-2">
-                        Created with Blender Web Preview by 
-                        <a href="https://linktr.ee/egrettas" target="_blank" class="text-indigo-400 hover:text-indigo-300">Egret</a>
+                        Created with BlendXweb by 
+                        <a href="https://linktr.ee/egrettas" target="_blank" class="text-lime-400  font-bold hover:text-teal-400">Egret</a>
                     </div>
                     <div class="flex justify-center">
-                        <a href="https://github.com/egret/blender-web-preview" target="_blank" 
-                           class="flex items-center bg-gray-700 hover:bg-gray-600 text-white py-1 px-3 rounded-md text-xs">
+                        <a href="https://github.com/berloop/blender-web-viewer" target="_blank" 
+                           class="flex items-center bg-neutral-900  hover:bg-neutral-800 text-white py-2 px-3 rounded-md text-xs">
                             <i class="fa-brands fa-github mr-1"></i>
                             Star on GitHub
                         </a>
@@ -216,11 +219,11 @@
         </div>
         
         <!-- Mobile Controls Panel (clone) -->
-        <div id="mobile-controls" class="controls-panel-mobile">
+        <div id="mobile-controls" class="controls-panel-mobile  bg-neutral-900">
             <div class="p-4 space-y-6">
                 <!-- Close Button -->
                 <div class="flex justify-end">
-                    <button id="close-mobile-controls" class="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-full">
+                    <button id="close-mobile-controls" class="bg-neutral-700 hover:bg-neutral-600 text-white p-2 rounded-xl">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
@@ -228,65 +231,67 @@
                 <!-- Header Info -->
                 <div>
                     <h2 id="mobile-scene-title" class="text-xl font-bold text-white flex items-center">
-                        <i class="fa-solid fa-cube mr-2 text-indigo-400"></i>
+                        <i class="fa-solid fa-cube mr-2 text-neutral-400"></i>
                         <span>Blender Scene</span>
                     </h2>
-                    <div id="mobile-scene-stats" class="text-sm text-gray-400 mt-1"></div>
+                    <div id="mobile-scene-stats" class="text-sm text-neutral-400 mt-1"></div>
                 </div>
                 
                 <!-- Camera Controls -->
                 <div class="space-y-3">
-                    <h3 class="text-md font-semibold text-gray-300 flex items-center">
-                        <i class="fa-solid fa-camera mr-2 text-indigo-400"></i>
-                        Camera
+                    <h3 class="text-md font-semibold text-neutral-300 flex items-center">
+                        <i class="fa-solid fa-camera mr-2 text-neutral-400"></i>
+                        Camera Controls
                     </h3>
                     <div>
-                        <button id="mobile-btn-reset-camera" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md flex justify-center items-center mb-2">
-                            <i class="fa-solid fa-rotate mr-2"></i>
-                            Reset Camera
-                        </button>
+                        
                         <div class="grid grid-cols-3 gap-2">
-                            <button id="mobile-btn-top-view" class="bg-gray-700 hover:bg-gray-600 text-white py-2 px-3 rounded-md flex items-center justify-center">
+                            <button id="mobile-btn-top-view" class="bg-neutral-800  rounded-md hover:bg-neutral-700 text-sm text-white py-2 px-3 rounded-md flex items-center justify-center">
                                 <i class="fa-solid fa-arrow-up mr-1"></i>
                                 Top
                             </button>
-                            <button id="mobile-btn-front-view" class="bg-gray-700 hover:bg-gray-600 text-white py-2 px-3 rounded-md flex items-center justify-center">
+                            <button id="mobile-btn-front-view" class="bg-neutral-800  rounded-md hover:bg-neutral-700 text-sm text-white py-2 px-3 rounded-md flex items-center justify-center">
                                 <i class="fa-solid fa-arrow-right mr-1"></i>
                                 Front
                             </button>
-                            <button id="mobile-btn-side-view" class="bg-gray-700 hover:bg-gray-600 text-white py-2 px-3 rounded-md flex items-center justify-center">
+                            <button id="mobile-btn-side-view" class="bg-neutral-800  rounded-md hover:bg-neutral-700 text-sm text-white py-2 px-3 rounded-md flex items-center justify-center">
                                 <i class="fa-solid fa-arrow-left mr-1"></i>
                                 Side
                             </button>
                         </div>
+                       
                     </div>
+                    <button id="mobile-btn-reset-camera" class="w-full bg-neutral-800  rounded-md hover:bg-neutral-700 text-sm  text-white py-2 px-4 rounded-md flex justify-center items-center mb-2">
+                        <i class="fa-solid fa-rotate mr-2"></i>
+                        Reset Camera
+                    </button>
                 </div>
                 
                 <!-- Display Controls -->
                 <div class="space-y-3">
-                    <h3 class="text-md font-semibold text-gray-300 flex items-center">
-                        <i class="fa-solid fa-display mr-2 text-indigo-400"></i>
-                        Display
+                    <h3 class="text-md font-semibold text-neutral-300 flex items-center">
+                        <i class="fa-solid fa-display mr-2 text-neutral-400"></i>
+                        Display Options
                     </h3>
                     <div class="space-y-2">
                         <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" id="mobile-toggle-wireframe" class="h-4 w-4 rounded text-indigo-600 focus:ring-indigo-500 focus:ring-opacity-25">
+                            <input type="checkbox" id="mobile-toggle-wireframe" class="h-4 w-4 rounded text-neutral-600 focus:ring-neutral-500 focus:ring-opacity-25">
                             <span class="flex items-center">
-                                <i class="fa-solid fa-cubes-stacked mr-2 text-gray-400"></i>
+                                <i class="fa-solid fa-cubes-stacked mr-2 text-neutral-400"></i>
                                 Wireframe
                             </span>
                         </label>
                         <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" id="mobile-toggle-grid" checked class="h-4 w-4 rounded text-indigo-600 focus:ring-indigo-500 focus:ring-opacity-25">
+                            <input type="checkbox" id="mobile-toggle-grid" checked class="h-4 w-4 rounded text-neutral-600 focus:ring-neutral-500 focus:ring-opacity-25">
                             <span class="flex items-center">
-                                <i class="fa-solid fa-border-all mr-2 text-gray-400"></i>
+                                <i class="fa-solid fa-border-all mr-2 text-neutral-400"></i>
                                 Grid
                             </span>
                         </label>
                         <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" id="mobile-toggle-lights" checked class="h-4 w-4 rounded text-indigo-600 focus:ring-indigo-500 focus:ring-opacity-25">
+                            <input type="checkbox" id="mobile-toggle-lights" checked class="h-4 w-4 rounded text-neutral-600 focus:ring-neutral-500 focus:ring-opacity-25">
                             <span class="flex items-center">
-                                <i class="fa-solid fa-lightbulb mr-2 text-gray-400"></i>
+                                <i class="fa-solid fa-lightbulb mr-2 text-neutral-400"></i>
                                 Lights
                             </span>
                         </label>
@@ -295,21 +300,21 @@
                 
                 <!-- Animation Controls -->
                 <div id="mobile-animation-controls" class="space-y-3">
-                    <h3 class="text-md font-semibold text-gray-300 flex items-center">
-                        <i class="fa-solid fa-play mr-2 text-indigo-400"></i>
+                    <h3 class="text-md font-semibold text-neutral-300 flex items-center">
+                        <i class="fa-solid fa-play mr-2 text-neutral-400"></i>
                         Animation
                     </h3>
                     <div class="space-y-3">
                         <div class="flex space-x-2">
-                            <button id="mobile-btn-play" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
+                            <button id="mobile-btn-play" class="flex-1 bg-teal-600 hover:bg-neutral-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
                                 <i class="fa-solid fa-play mr-1"></i>
                                 Play
                             </button>
-                            <button id="mobile-btn-pause" class="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
+                            <button id="mobile-btn-pause" class="flex-1 bg-orange-600 hover:bg-neutral-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
                                 <i class="fa-solid fa-pause mr-1"></i>
                                 Pause
                             </button>
-                            <button id="mobile-btn-stop" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
+                            <button id="mobile-btn-stop" class="flex-1 bg-rose-600 hover:bg-neutral-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
                                 <i class="fa-solid fa-stop mr-1"></i>
                                 Stop
                             </button>
@@ -317,21 +322,21 @@
                         <div>
                             <input type="range" id="mobile-animation-slider" min="0" max="100" value="0" class="w-full">
                         </div>
-                        <div id="mobile-animation-time" class="text-center text-sm text-gray-400">
+                        <div id="mobile-animation-time" class="text-center text-sm text-neutral-400">
                             0:00 / 0:00
                         </div>
                     </div>
                 </div>
                 
                 <!-- Attribution -->
-                <div class="pt-4 mt-4 border-t border-gray-700 text-xs text-gray-500">
+                <div class="pt-4 mt-4  border-t border-dashed border-neutral-700 text-xs text-neutral-500">
                     <div class="text-center mb-2">
                         Created with Blender Web Preview by 
-                        <a href="https://linktr.ee/egrettas" target="_blank" class="text-indigo-400 hover:text-indigo-300">Egret</a>
+                        <a href="https://linktr.ee/egrettas" target="_blank" class="text-lime-400 font-bold hover:text-teal-400">Egret</a>
                     </div>
                     <div class="flex justify-center">
-                        <a href="https://github.com/egret/blender-web-preview" target="_blank" 
-                           class="flex items-center bg-gray-700 hover:bg-gray-600 text-white py-1 px-3 rounded-md text-xs">
+                        <a href="https://github.com/berloop/blender-web-viewer" target="_blank" 
+                           class="flex items-center bg-neutral-800  hover:bg-neutral-700 text-white py-2 px-3 rounded-md text-xs">
                             <i class="fa-brands fa-github mr-1"></i>
                             Star on GitHub
                         </a>
@@ -341,7 +346,7 @@
         </div>
         
         <!-- Mobile Controls Toggle -->
-        <button id="toggle-controls" class="md:hidden fixed bottom-4 right-4 bg-indigo-600 p-3 rounded-full shadow-lg z-10">
+        <button id="toggle-controls" class="md:hidden fixed bottom-4 right-4 bg-neutral-600 p-3 rounded-full shadow-lg z-10">
             <i class="fa-solid fa-sliders text-white"></i>
         </button>
     </div>

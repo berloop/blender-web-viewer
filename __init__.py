@@ -2,11 +2,11 @@
 # For Blender 4.0+
 
 bl_info = {
-    "name": "Blender Web Preview",
+    "name": "BlendXWeb",
     "author": "Egret",
     "version": (1, 0),
     "blender": (4, 0, 0),
-    "location": "View3D > Sidebar > Web Preview",
+    "location": "View3D > Sidebar > BlendXweb",
     "description": "Preview and export Blender scenes to web browsers",
     "warning": "",
     "doc_url": "",
@@ -171,7 +171,7 @@ def generate_preview_files(context, temp_dir):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blender Web Preview</title>
+    <title>BlendXweb | By Egret</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -398,11 +398,11 @@ class WEB_PREVIEW_OT_stop_server(bpy.types.Operator):
 
 class WEB_PREVIEW_PT_panel(bpy.types.Panel):
     """Panel for web preview controls"""
-    bl_label = "Web Preview"
+    bl_label = "BlendXweb By Egret"
     bl_idname = "WEB_PREVIEW_PT_panel"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = 'Web Preview'
+    bl_category = 'BlendXweb'
     
     def draw(self, context):
         layout = self.layout
@@ -419,7 +419,7 @@ class WEB_PREVIEW_PT_panel(bpy.types.Panel):
         
         # Server status
         is_running = preview_server and preview_server.is_running
-        box.label(text=f"Server: {'Running' if is_running else 'Stopped'}")
+        box.label(text=f"Server: {'Running' if is_running else 'Offline'}")
         
         if is_running:
             box.operator("web_preview.stop_server", icon='X')
@@ -439,7 +439,7 @@ class WebPreviewPreferences(bpy.types.AddonPreferences):
     
     def draw(self, context):
         layout = self.layout
-        layout.label(text="Blender Web Preview Settings")
+        layout.label(text="Blender Web Preview/BlendXweb Settings")
         # TODO: Add global addon settings here
 
 # ------------------------------------

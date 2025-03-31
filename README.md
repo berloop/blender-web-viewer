@@ -26,7 +26,7 @@ This addon allows you to preview your Blender scenes in a web browser and export
 4. Click "Install..." button at the top right
 5. Navigate to and select the downloaded ZIP file
 6. Click "Install Add-on"
-7. Enable the addon by checking the box next to "3D View: Blender Web Preview"
+7. Enable the addon by checking the box next to "3D View: BlendXWeb"
 
 ### Method 2: Manual Installation
 
@@ -37,7 +37,7 @@ This addon allows you to preview your Blender scenes in a web browser and export
    - Linux: `~/.config/blender/4.0/scripts/addons`
 3. Copy the entire `blender_web_preview` folder to the addons directory
 4. Start Blender and go to Edit > Preferences > Add-ons
-5. Search for "Web Preview" and enable the addon
+5. Search for "BlendXWeb" and enable the addon
 
 ## File Structure Setup
 
@@ -54,7 +54,7 @@ After installation, you need to run the file structure setup script once to crea
 Once installed, you can access the addon from the 3D View sidebar:
 
 1. Open the sidebar by pressing `N` in the 3D View
-2. Select the "Web Preview" tab
+2. Select the "Web Preview/BlendXWeb" tab
 
 ### Previewing in Browser
 
