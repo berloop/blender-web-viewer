@@ -1,0 +1,18 @@
+schema_version = "1.0.0"
+id = "blendxweb"
+version = "1.0.0"
+name = "BlendXWeb"
+tagline = "Preview and export Blender scenes to interactive web viewers"
+maintainer = "Egret <egretfx@gmail.com>"
+type = "add-on"
+blender_version_min = "4.0.0"
+license = [
+    "SPDX:GPL-3.0-or-later",
+]
+copyright = [
+    "2025 Egret Software",
+]
+tags = ["Web", "Export", "Viewer", "3D View"]
+
+[permissions]
+files = "Export and serve 3D models and web content"
