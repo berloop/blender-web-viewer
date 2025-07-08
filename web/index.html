@@ -3,226 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blender-Web Previewer | By Egret</title>
+    <title>BlendXWeb | By Egret</title>
     
-    <!-- Google Fonts - Host Grotesk -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    
+
+<!-- Google Fonts - Space Grotesk -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
-    <!-- Tailwind Styles with Host Grotesk font -->
-    <style type="text/tailwindcss">
-        @layer base {
-            body {
-                @apply bg-neutral-900 text-neutral-100 overflow-hidden;
-                font-family: "Host Grotesk", sans-serif;
-                font-weight: 400;
-            }
-            
-            h1, h2, h3, h4, h5, h6 {
-                font-family: "Host Grotesk", sans-serif;
-                font-weight: 700;
-            }
-            
-            button {
-                font-family: "Host Grotesk", sans-serif;
-                font-weight: 500;
-            }
-            
-            input[type="range"] {
-                @apply w-full h-2 bg-neutral-700 rounded-lg appearance-none cursor-pointer;
-            }
-            
-            input[type="range"]::-webkit-slider-thumb {
-                @apply appearance-none w-4 h-4 bg-neutral-500 rounded-full;
-            }
-            
-            .controls-panel-mobile {
-                @apply fixed inset-0 z-20 bg-neutral-800 overflow-auto;
-                display: none;
-            }
-            
-            .controls-panel-mobile.visible {
-                display: block;
-            }
-            
-            .font-light {
-                font-weight: 300;
-            }
-            
-            .font-regular {
-                font-weight: 400;
-            }
-            
-            .font-medium {
-                font-weight: 500;
-            }
-            
-            .font-semibold {
-                font-weight: 600;
-            }
-            
-            .font-bold {
-                font-weight: 700;
-            }
-            
-            .font-extrabold {
-                font-weight: 800;
-            }
+<style type="text/tailwindcss">
+    @layer base {
+        body {
+            @apply bg-neutral-900 text-neutral-100 overflow-hidden;
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 400;
         }
-    </style>
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 700;
+        }
+        
+        button {
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 500;
+        }
+
+        input[type="range"] {
+            @apply w-full h-2 bg-neutral-700 rounded-lg appearance-none cursor-pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            @apply appearance-none w-4 h-4 bg-neutral-500 rounded-full;
+        }
+
+        .wireframe-color {
+            @apply w-6 h-6 rounded border-2 border-neutral-600 cursor-pointer transition-all;
+        }
+
+        .wireframe-color.active {
+            @apply border-green-500 scale-110;
+        }
+
+        .wireframe-color.disabled {
+            @apply bg-neutral-800 border-neutral-700;
+            position: relative;
+        }
+
+        .wireframe-color.disabled::after {
+            content: '×';
+            @apply absolute inset-0 flex items-center justify-center text-neutral-500 text-xs font-bold;
+        }
+
+        /* Custom scrollbar */
+        .custom-scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: #525252 #171717;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #171717;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #525252;
+            border-radius: 3px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background-color: #737373;
+        }
+    }
+</style>
+
 </head>
 <body>
     <div class="relative h-screen flex flex-col md:flex-row">
-        <!-- Warning for file:// protocol -->
-        <div id="protocol-warning" class="hidden fixed top-0 left-0 w-full bg-red-600 text-white p-2 text-center z-50">
-            This 3D viewer may not work when opened directly from your computer.
-            <br>For best results:
-            <br>1) Use a web server (like VS Code Live Server) or
-            <br>2) Upload these files to a web hosting service.
-        </div>
-        
         <!-- Viewer Area -->
         <div id="viewer" class="flex-1 bg-black relative">
             <!-- Loading Overlay -->
             <div class="loading-overlay absolute inset-0 bg-black bg-opacity-80 flex flex-col items-center justify-center z-50">
                 <div class="w-12 h-12 border-4 border-neutral-500 border-t-transparent rounded-full animate-spin"></div>
-                <div class="mt-4 text-neutral-300 text-sm font-medium" id="loading-percentage">Loading...</div>
+                <div class="mt-4 text-neutral-300 text-xs font-medium" id="loading-percentage">Loading...</div>
             </div>
         </div>
         
-        <!-- Desktop Controls Panel -->
-        <div id="controls" class="hidden md:block w-full md:w-80 bg-neutral-950 border-l border-neutral-700 shadow-lg overflow-y-auto">
+        <!-- Controls Panel -->
+        <div id="controls" class="hidden md:block w-full md:w-80 bg-neutral-950 border-l border-neutral-700 shadow-lg overflow-y-auto custom-scrollbar">
             <div class="p-4 space-y-6">
-                <!-- Header Info -->
-                <div>
-                    <!-- <span class="text-xs text-neutral-400">File Name</span> -->
-                    <h2 id="scene-title" class="text-sm font-bold text-white flex items-center">
-                        <i class="fa-solid fa-cube mr-2 text-neutral-400"></i>
-                        <span>Blender Scene</span>
-                    </h2>
-                    <div id="scene-stats" class="text-sm text-neutral-400 mt-1"></div>
-                </div>
                 
-                <!-- Camera Controls -->
-                <div class="space-y-3">
-                    <h3 class="text-lg font-semibold text-neutral-300 flex items-center">
-                        <i class="fa-solid fa-camera mr-2 text-neutral-400"></i>
-                        Camera Controls
-                    </h3>
-                    <div>
-                       
-                        <div class="grid grid-cols-3 gap-2">
-                            <button id="btn-top-view" class="bg-neutral-900  rounded-md hover:bg-neutral-800 text-sm text-white py-2 px-3 rounded-md flex items-center justify-center">
-                                <i class="fa-solid fa-arrow-up mr-1"></i>
-                                Top
-                            </button>
-                            <button id="btn-front-view" class="bg-neutral-900  rounded-md hover:bg-neutral-800 text-sm text-white py-2 px-3 rounded-md flex items-center justify-center">
-                                <i class="fa-solid fa-arrow-right mr-1"></i>
-                                Front
-                            </button>
-                            <button id="btn-side-view" class="bg-neutral-900  rounded-md hover:bg-neutral-800 text-sm text-white py-2 px-3 rounded-md flex items-center justify-center">
-                                <i class="fa-solid fa-arrow-left mr-1"></i>
-                                Side
-                            </button>
-                        </div>
-                        
-                    </div>
-                    <button id="btn-reset-camera" class="w-full bg-neutral-900  rounded-md hover:bg-neutral-800 text-sm text-white py-2 px-4 rounded-md flex justify-center items-center mb-2">
-                        <i class="fa-solid fa-rotate mr-2"></i>
-                        Reset Camera
-                    </button>
-                </div>
-                
-                <!-- Display Controls -->
-                <div class="space-y-3">
-                    <h3 class="text-lg font-semibold text-neutral-300 flex items-center">
-                        <i class="fa-solid fa-display mr-2 text-neutral-400"></i>
-                        Display Options
-                    </h3>
-                    <div class="space-y-2">
-                        <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" id="toggle-wireframe" class="h-4 w-4 rounded text-neutral-600 focus:ring-neutral-500 focus:ring-opacity-25">
-                            <span class="flex items-center">
-                                <i class="fa-solid fa-cubes-stacked mr-2 text-neutral-400"></i>
-                                Wireframe
-                            </span>
-                        </label>
-                        <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" id="toggle-grid" checked class="h-4 w-4 rounded text-neutral-600 focus:ring-neutral-500 focus:ring-opacity-25">
-                            <span class="flex items-center">
-                                <i class="fa-solid fa-border-all mr-2 text-neutral-400"></i>
-                                Grid
-                            </span>
-                        </label>
-                        <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" id="toggle-lights" checked class="h-4 w-4 rounded text-neutral-600 focus:ring-neutral-500 focus:ring-opacity-25">
-                            <span class="flex items-center">
-                                <i class="fa-solid fa-lightbulb mr-2 text-neutral-400"></i>
-                                Lights
-                            </span>
-                        </label>
-                    </div>
-                </div>
-                
-                <!-- Animation Controls -->
-                <div id="animation-controls" class="space-y-3">
-                    <h3 class="text-md font-semibold text-neutral-300 flex items-center">
-                        <i class="fa-solid fa-play mr-2 text-neutral-400"></i>
-                        Animation
-                    </h3>
-                    <div class="space-y-3">
-                        <div class="flex space-x-2">
-                            <button id="btn-play" class="flex-1 bg-orange-600 hover:bg-neutral-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
-                                <i class="fa-solid fa-play mr-1"></i>
-                                Play
-                            </button>
-                            <button id="btn-pause" class="flex-1 bg-teal-600 hover:bg-neutral-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
-                                <i class="fa-solid fa-pause mr-1"></i>
-                                Pause
-                            </button>
-                            <button id="btn-stop" class="flex-1 bg-rose-600 hover:bg-neutral-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
-                                <i class="fa-solid fa-stop mr-1"></i>
-                                Stop
-                            </button>
-                        </div>
-                        <div>
-                            <input type="range" id="animation-slider" min="0" max="100" value="0" class="w-full">
-                        </div>
-                        <div id="animation-time" class="text-center text-sm text-neutral-400">
-                            0:00 / 0:00
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Attribution -->
-                <div class="pt-4 mt-4 border-t border-dashed border-neutral-700 text-xs text-neutral-500">
-                    <div class="text-center mb-2">
-                        Created with BlendXweb by 
-                        <a href="https://linktr.ee/egrettas" target="_blank" class="text-lime-400  font-bold hover:text-teal-400">Egret</a>
-                    </div>
-                    <div class="flex justify-center">
-                        <a href="https://github.com/berloop/blender-web-viewer" target="_blank" 
-                           class="flex items-center bg-neutral-900  hover:bg-neutral-800 text-white py-2 px-3 rounded-md text-xs">
-                            <i class="fa-brands fa-github mr-1"></i>
-                            Star on GitHub
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Mobile Controls Panel (clone) -->
-        <div id="mobile-controls" class="controls-panel-mobile  bg-neutral-900">
-            <div class="p-4 space-y-6">
-                <!-- Close Button -->
-                <div class="flex justify-end">
+                <!-- Mobile Close Button -->
+                <div class="md:hidden flex justify-end mb-4">
                     <button id="close-mobile-controls" class="bg-neutral-700 hover:bg-neutral-600 text-white p-2 rounded-xl">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
@@ -230,38 +111,119 @@
                 
                 <!-- Header Info -->
                 <div>
-                    <h2 id="mobile-scene-title" class="text-xl font-bold text-white flex items-center">
+                   
+                    <h2 id="scene-title" class="text-xs font-bold text-white flex items-center">
                         <i class="fa-solid fa-cube mr-2 text-neutral-400"></i>
-                        <span>Blender Scene</span>
+                         <span>Blender Scene</span>
                     </h2>
-                    <div id="mobile-scene-stats" class="text-sm text-neutral-400 mt-1"></div>
+                    <div id="scene-stats" class="text-xs text-neutral-400 mt-1"></div>
                 </div>
+                
+                <!-- Model Information Widget -->
+                <div class="space-y-3 border-t border-neutral-800 pt-4">
+                    <h3 class="text-xs font-medium uppercase text-neutral-400 font-semibold flex items-center">
+                        <i class="fa-solid fa-info-circle mr-2 text-neutral-400"></i>
+                        Model Details
+                    </h3>
+                    <div class="bg-neutral-900 rounded-lg p-3 space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-neutral-400">Vertices:</span>
+                            <span id="model-vertices" class="text-neutral-200 text-xs">-</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-neutral-400">Faces:</span>
+                            <span id="model-faces" class="text-neutral-200 text-xs">-</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-neutral-400">Materials:</span>
+                            <span id="model-materials" class="text-neutral-200 text-xs">-</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-neutral-400">File Size:</span>
+                            <span id="model-filesize" class="text-neutral-200 text-xs">-</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Model Inspector -->
+                <div class="space-y-3 border-t border-neutral-800 pt-2">
+                  
+                    <!-- Shading Controls -->
+                    <div class="space-y-2">
+                        <label class="text-xs font-medium text-neutral-400 flex items-center">
+        <i class="fa-solid fa-shapes mr-2 text-neutral-400 text-sm"></i>
+        SHADING
+    </label>
+                        <div class="space-y-1">
+                            <button id="shading-toggle" class="w-full bg-neutral-800 hover:bg-neutral-700 text-white px-3 py-2 rounded text-xs flex items-center justify-between" data-mode="smooth">
+                                <span class="flex items-center">
+                                    <i class="fa-solid fa-circle-half-stroke mr-2"></i>
+                                    <span id="shading-text">Smooth Shading</span>
+                                </span>
+                                <span class="text-green-500 text-xs" id="shading-status">ON</span>
+                            </button>
+                            <button id="show-normals" class="w-full bg-neutral-800 hover:bg-neutral-700 text-white px-3 py-2 rounded text-xs flex items-center justify-between">
+                                <span class="flex items-center">
+                                    <i class="fa-solid fa-arrows-alt mr-2"></i>
+                                    Show Normals
+                                </span>
+                                <span class="text-neutral-500 text-xs" id="normals-status">OFF</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Reset Button -->
+                    <!-- <div class="space-y-2">
+                        <button id="reset-all" class="w-full bg-neutral-900 rounded-md hover:bg-neutral-800 text-white px-3 py-2 rounded text-xs flex items-center justify-center">
+                            <i class="fa-solid fa-refresh mr-2"></i>
+                            Reset All
+                        </button>
+                    </div> -->
+                </div>
+                
+                <!-- Lighting Controls -->
+      
+<div class="space-y-3 border-t border-neutral-800 pt-4">
+    <h3 class="text-xs font-medium uppercase text-neutral-400 font-semibold flex items-center">
+        <i class="fa-solid fa-sun mr-2 text-neutral-400 text-xs"></i>
+        Lighting
+    </h3>
+    
+    <div class="space-y-3">
+        <div>
+            <div class="flex justify-between items-center text-xs text-neutral-400 mb-1">
+                <label for="lighting-intensity">Lighting Intensity</label>
+                <span id="lighting-value" class="text-neutral-500 text-xs">1.0</span>
+            </div>
+            <input type="range" id="lighting-intensity" min="0.1" max="3" step="0.1" value="1.0" class="w-full">
+        </div>
+    </div>
+</div>
+
                 
                 <!-- Camera Controls -->
                 <div class="space-y-3">
-                    <h3 class="text-md font-semibold text-neutral-300 flex items-center">
+                    <h3 class="text-sm font-semibold text-neutral-300 flex items-center">
                         <i class="fa-solid fa-camera mr-2 text-neutral-400"></i>
-                        Camera Controls
+                        Camera
                     </h3>
                     <div>
-                        
                         <div class="grid grid-cols-3 gap-2">
-                            <button id="mobile-btn-top-view" class="bg-neutral-800  rounded-md hover:bg-neutral-700 text-sm text-white py-2 px-3 rounded-md flex items-center justify-center">
+                            <button id="btn-top-view" class="bg-neutral-900 rounded-md hover:bg-neutral-800 text-xs text-white py-2 px-3 rounded-md flex items-center justify-center">
                                 <i class="fa-solid fa-arrow-up mr-1"></i>
                                 Top
                             </button>
-                            <button id="mobile-btn-front-view" class="bg-neutral-800  rounded-md hover:bg-neutral-700 text-sm text-white py-2 px-3 rounded-md flex items-center justify-center">
+                            <button id="btn-front-view" class="bg-neutral-900 rounded-md hover:bg-neutral-800 text-xs text-white py-2 px-3 rounded-md flex items-center justify-center">
                                 <i class="fa-solid fa-arrow-right mr-1"></i>
                                 Front
                             </button>
-                            <button id="mobile-btn-side-view" class="bg-neutral-800  rounded-md hover:bg-neutral-700 text-sm text-white py-2 px-3 rounded-md flex items-center justify-center">
+                            <button id="btn-side-view" class="bg-neutral-900 rounded-md hover:bg-neutral-800 text-xs text-white py-2 px-3 rounded-md flex items-center justify-center">
                                 <i class="fa-solid fa-arrow-left mr-1"></i>
                                 Side
                             </button>
                         </div>
-                       
                     </div>
-                    <button id="mobile-btn-reset-camera" class="w-full bg-neutral-800  rounded-md hover:bg-neutral-700 text-sm  text-white py-2 px-4 rounded-md flex justify-center items-center mb-2">
+                    <button id="btn-reset-camera" class="w-full bg-neutral-900 rounded-md hover:bg-neutral-800 text-xs text-white py-2 px-4 rounded-md flex justify-center items-center mb-2">
                         <i class="fa-solid fa-rotate mr-2"></i>
                         Reset Camera
                     </button>
@@ -269,28 +231,28 @@
                 
                 <!-- Display Controls -->
                 <div class="space-y-3">
-                    <h3 class="text-md font-semibold text-neutral-300 flex items-center">
+                    <h3 class="text-xs font-medium uppercase text-neutral-400 font-semibold flex items-center">
                         <i class="fa-solid fa-display mr-2 text-neutral-400"></i>
                         Display Options
                     </h3>
                     <div class="space-y-2">
                         <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" id="mobile-toggle-wireframe" class="h-4 w-4 rounded text-neutral-600 focus:ring-neutral-500 focus:ring-opacity-25">
-                            <span class="flex items-center">
+                            <input type="checkbox" id="toggle-wireframe" class="h-4 w-4 rounded text-neutral-600 focus:ring-neutral-500 focus:ring-opacity-25">
+                            <span class="flex items-center text-sm">
                                 <i class="fa-solid fa-cubes-stacked mr-2 text-neutral-400"></i>
                                 Wireframe
                             </span>
                         </label>
                         <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" id="mobile-toggle-grid" checked class="h-4 w-4 rounded text-neutral-600 focus:ring-neutral-500 focus:ring-opacity-25">
-                            <span class="flex items-center">
+                            <input type="checkbox" id="toggle-grid" checked class="h-4 w-4 rounded text-neutral-600 focus:ring-neutral-500 focus:ring-opacity-25">
+                            <span class="flex items-center text-sm">
                                 <i class="fa-solid fa-border-all mr-2 text-neutral-400"></i>
                                 Grid
                             </span>
                         </label>
                         <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" id="mobile-toggle-lights" checked class="h-4 w-4 rounded text-neutral-600 focus:ring-neutral-500 focus:ring-opacity-25">
-                            <span class="flex items-center">
+                            <input type="checkbox" id="toggle-lights" checked class="h-4 w-4 rounded text-neutral-600 focus:ring-neutral-500 focus:ring-opacity-25">
+                            <span class="flex items-center text-sm">
                                 <i class="fa-solid fa-lightbulb mr-2 text-neutral-400"></i>
                                 Lights
                             </span>
@@ -299,47 +261,53 @@
                 </div>
                 
                 <!-- Animation Controls -->
-                <div id="mobile-animation-controls" class="space-y-3">
-                    <h3 class="text-md font-semibold text-neutral-300 flex items-center">
-                        <i class="fa-solid fa-play mr-2 text-neutral-400"></i>
-                        Animation
-                    </h3>
-                    <div class="space-y-3">
-                        <div class="flex space-x-2">
-                            <button id="mobile-btn-play" class="flex-1 bg-teal-600 hover:bg-neutral-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
-                                <i class="fa-solid fa-play mr-1"></i>
-                                Play
-                            </button>
-                            <button id="mobile-btn-pause" class="flex-1 bg-orange-600 hover:bg-neutral-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
-                                <i class="fa-solid fa-pause mr-1"></i>
-                                Pause
-                            </button>
-                            <button id="mobile-btn-stop" class="flex-1 bg-rose-600 hover:bg-neutral-700 text-white py-2 px-2 rounded-md flex items-center justify-center">
-                                <i class="fa-solid fa-stop mr-1"></i>
-                                Stop
-                            </button>
-                        </div>
-                        <div>
-                            <input type="range" id="mobile-animation-slider" min="0" max="100" value="0" class="w-full">
-                        </div>
-                        <div id="mobile-animation-time" class="text-center text-sm text-neutral-400">
-                            0:00 / 0:00
-                        </div>
-                    </div>
-                </div>
+               <div id="animation-controls" class="space-y-3">
+    <h3 class="text-xs font-medium uppercase text-neutral-400 font-semibold flex items-center">
+        <i class="fa-solid fa-play mr-2 text-neutral-400"></i>
+        Animation
+    </h3>
+    <div class="space-y-3">
+        <div class="flex space-x-2">
+            <button id="btn-play" class="flex-1 bg-orange-600 hover:bg-neutral-700 text-white py-1 px-2 text-xs rounded-md flex items-center justify-center">
+                <i class="fa-solid fa-play mr-1 text-xs"></i>
+                Play
+            </button>
+            <button id="btn-pause" class="flex-1 bg-teal-600 hover:bg-neutral-700 text-white py-1 px-2 text-xs rounded-md flex items-center justify-center">
+                <i class="fa-solid fa-pause mr-1 text-xs"></i>
+                Pause
+            </button>
+            <button id="btn-stop" class="flex-1 bg-rose-600 hover:bg-neutral-700 text-white py-1 px-2 text-xs rounded-md flex items-center justify-center">
+                <i class="fa-solid fa-stop mr-1 text-xs"></i>
+                Stop
+            </button>
+        </div>
+        <div>
+          <input type="range" id="animation-slider" min="0" max="1000" value="0" class="w-full">
+        </div>
+        <div id="animation-time" class="text-center text-xs text-neutral-400">
+            0:00 / 0:00
+        </div>
+    </div>
+</div>
+
                 
                 <!-- Attribution -->
-                <div class="pt-4 mt-4  border-t border-dashed border-neutral-700 text-xs text-neutral-500">
+                <div class="pt-4 mt-4 border-t border-dashed border-neutral-700 text-xs text-neutral-500">
                     <div class="text-center mb-2">
-                        Created with Blender Web Preview by 
+                        Created with BlendXweb by 
                         <a href="https://linktr.ee/egrettas" target="_blank" class="text-lime-400 font-bold hover:text-teal-400">Egret</a>
                     </div>
                     <div class="flex justify-center">
                         <a href="https://github.com/berloop/blender-web-viewer" target="_blank" 
-                           class="flex items-center bg-neutral-800  hover:bg-neutral-700 text-white py-2 px-3 rounded-md text-xs">
+                           class="flex items-center bg-neutral-900 hover:bg-neutral-800 text-white py-2 px-3 rounded-md text-xs">
                             <i class="fa-brands fa-github mr-1"></i>
                             Star on GitHub
                         </a>
+                        <a href="https://ko-fi.com/egretfx" target="_blank" 
+   class="flex items-center bg-neutral-900 hover:bg-neutral-800 text-white py-2 px-3 rounded-md text-xs ml-2">
+    <i class="fa-solid fa-coffee mr-1"></i>
+    Buy me a coffee
+</a>
                     </div>
                 </div>
             </div>
@@ -351,101 +319,196 @@
         </button>
     </div>
     
-    <!-- Use a specific version known to work -->
+    <!-- Three.js Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r124/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.124.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.124.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.124.0/examples/js/loaders/DRACOLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.124.0/examples/js/helpers/VertexNormalsHelper.js"></script>
     
     <!-- Load viewer script -->
     <script src="js/viewer.js"></script>
     
-    <!-- Initialize UI functionality -->
+    <!-- UI Controls Script -->
     <script>
-        // Function to synchronize UI elements between desktop and mobile
-        function syncUIState() {
-            // Sync scene info
-            document.getElementById('mobile-scene-title').textContent = document.getElementById('scene-title').textContent;
-            document.getElementById('mobile-scene-stats').textContent = document.getElementById('scene-stats').textContent;
+        let normalsHelper = null;
+        
+        // Shading toggle
+        document.getElementById('shading-toggle').addEventListener('click', function() {
+            const currentMode = this.dataset.mode;
+            const newMode = currentMode === 'smooth' ? 'flat' : 'smooth';
+            this.dataset.mode = newMode;
             
-            // Sync checkboxes
-            document.getElementById('mobile-toggle-wireframe').checked = document.getElementById('toggle-wireframe').checked;
-            document.getElementById('mobile-toggle-grid').checked = document.getElementById('toggle-grid').checked;
-            document.getElementById('mobile-toggle-lights').checked = document.getElementById('toggle-lights').checked;
+            const text = document.getElementById('shading-text');
+            const status = document.getElementById('shading-status');
             
-            // Sync animation slider
-            document.getElementById('mobile-animation-slider').value = document.getElementById('animation-slider').value;
-            document.getElementById('mobile-animation-time').textContent = document.getElementById('animation-time').textContent;
-        }
+            if (newMode === 'flat') {
+                text.textContent = 'Flat Shading';
+                status.textContent = 'ON';
+                status.className = 'text-green-500 text-xs';
+            } else {
+                text.textContent = 'Smooth Shading';
+                status.textContent = 'ON';
+                status.className = 'text-green-500 text-xs';
+            }
+            
+            setShadingMode(newMode);
+        });
+        
+        // Show normals toggle
+        document.getElementById('show-normals').addEventListener('click', function() {
+            const status = document.getElementById('normals-status');
+            const isOn = status.textContent === 'ON';
+            
+            if (isOn) {
+                status.textContent = 'OFF';
+                status.className = 'text-neutral-500 text-xs';
+            } else {
+                status.textContent = 'ON';
+                status.className = 'text-green-500 text-xs';
+            }
+            
+            showNormals(!isOn);
+        });
+        
+        // Reset all button
+        document.getElementById('reset-all').addEventListener('click', function() {
+            resetAllSettings();
+        });
+        
+        // Lighting intensity control
+        document.getElementById('lighting-intensity').addEventListener('input', function(e) {
+            const value = parseFloat(e.target.value);
+            document.getElementById('lighting-value').textContent = value.toFixed(1);
+            setLightingIntensity(value);
+        });
         
         // Mobile controls toggle
         document.getElementById('toggle-controls').addEventListener('click', function() {
-            const mobileControls = document.getElementById('mobile-controls');
-            mobileControls.classList.add('visible');
-            syncUIState();
+            const controls = document.getElementById('controls');
+            controls.classList.remove('hidden');
+            controls.classList.add('fixed', 'inset-0', 'z-20');
         });
-        
+
         // Close mobile controls
         document.getElementById('close-mobile-controls').addEventListener('click', function() {
-            document.getElementById('mobile-controls').classList.remove('visible');
+            const controls = document.getElementById('controls');
+            controls.classList.add('hidden');
+            controls.classList.remove('fixed', 'inset-0', 'z-20');
         });
         
-        // Connect mobile controls to main functions
-        document.getElementById('mobile-btn-reset-camera').addEventListener('click', function() {
-            document.getElementById('btn-reset-camera').click();
-        });
-        
-        document.getElementById('mobile-btn-top-view').addEventListener('click', function() {
-            document.getElementById('btn-top-view').click();
-        });
-        
-        document.getElementById('mobile-btn-front-view').addEventListener('click', function() {
-            document.getElementById('btn-front-view').click();
-        });
-        
-        document.getElementById('mobile-btn-side-view').addEventListener('click', function() {
-            document.getElementById('btn-side-view').click();
-        });
-        
-        document.getElementById('mobile-toggle-wireframe').addEventListener('change', function(e) {
-            document.getElementById('toggle-wireframe').checked = e.target.checked;
-            document.getElementById('toggle-wireframe').dispatchEvent(new Event('change'));
-        });
-        
-        document.getElementById('mobile-toggle-grid').addEventListener('change', function(e) {
-            document.getElementById('toggle-grid').checked = e.target.checked;
-            document.getElementById('toggle-grid').dispatchEvent(new Event('change'));
-        });
-        
-        document.getElementById('mobile-toggle-lights').addEventListener('change', function(e) {
-            document.getElementById('toggle-lights').checked = e.target.checked;
-            document.getElementById('toggle-lights').dispatchEvent(new Event('change'));
-        });
-        
-        document.getElementById('mobile-btn-play').addEventListener('click', function() {
-            document.getElementById('btn-play').click();
-        });
-        
-        document.getElementById('mobile-btn-pause').addEventListener('click', function() {
-            document.getElementById('btn-pause').click();
-        });
-        
-        document.getElementById('mobile-btn-stop').addEventListener('click', function() {
-            document.getElementById('btn-stop').click();
-        });
-        
-        document.getElementById('mobile-animation-slider').addEventListener('input', function(e) {
-            document.getElementById('animation-slider').value = e.target.value;
-            document.getElementById('animation-slider').dispatchEvent(new Event('input'));
-        });
-        
-        // Check for file protocol
-        if (window.location.protocol === 'file:') {
-            document.getElementById('protocol-warning').classList.remove('hidden');
+        // Functions that control the 3D scene
+        function setShadingMode(mode) {
+            setTimeout(() => {
+                if (window.scene) {
+                    window.scene.traverse((child) => {
+                        if (child.isMesh && child.geometry) {
+                            if (mode === 'flat') {
+                                child.material.flatShading = true;
+                            } else {
+                                child.material.flatShading = false;
+                            }
+                            child.material.needsUpdate = true;
+                        }
+                    });
+                }
+            }, 100);
         }
         
-        // Update the original viewer.js loading progress function
+        function showNormals(show) {
+            setTimeout(() => {
+                if (window.scene) {
+                    if (normalsHelper) {
+                        window.scene.remove(normalsHelper);
+                        normalsHelper = null;
+                    }
+                    
+                    if (show) {
+                        window.scene.traverse((child) => {
+                            if (child.isMesh && child.geometry) {
+                                normalsHelper = new THREE.VertexNormalsHelper(child, 0.1, 0x00ff00);
+                                window.scene.add(normalsHelper);
+                                return;
+                            }
+                        });
+                    }
+                }
+            }, 100);
+        }
+        
+        function resetAllSettings() {
+            // Reset shading to smooth
+            const shadingToggle = document.getElementById('shading-toggle');
+            if (shadingToggle.dataset.mode !== 'smooth') {
+                shadingToggle.click();
+            }
+            
+            // Hide normals
+            const normalsStatus = document.getElementById('normals-status');
+            if (normalsStatus.textContent === 'ON') {
+                document.getElementById('show-normals').click();
+            }
+            
+            // Reset lighting intensity
+            document.getElementById('lighting-intensity').value = 1.0;
+            document.getElementById('lighting-value').textContent = '1.0';
+            setLightingIntensity(1.0);
+        }
+        
+        function setLightingIntensity(intensity) {
+            console.log('Setting lighting intensity to:', intensity);
+            setTimeout(() => {
+                if (window.scene) {
+                    window.scene.traverse((child) => {
+                        if (child.isLight) {
+                            if (child.type === 'AmbientLight') {
+                                child.intensity = (child.userData.originalIntensity || 1.2) * intensity;
+                            } else if (child.type === 'DirectionalLight') {
+                                child.intensity = (child.userData.originalIntensity || 1.0) * intensity;
+                            }
+                        }
+                    });
+                }
+            }, 100);
+        }
+        
+        function updateModelInfo(gltf) {
+            let totalVertices = 0;
+            let totalFaces = 0;
+            let materialCount = 0;
+            const materials = new Set();
+            
+            if (gltf && gltf.scene) {
+                gltf.scene.traverse((child) => {
+                    if (child.isMesh && child.geometry) {
+                        if (child.geometry.attributes.position) {
+                            totalVertices += child.geometry.attributes.position.count;
+                        }
+                        if (child.geometry.index) {
+                            totalFaces += child.geometry.index.count / 3;
+                        }
+                        if (child.material) {
+                            materials.add(child.material.uuid);
+                        }
+                    }
+                });
+                materialCount = materials.size;
+            }
+            
+            document.getElementById('model-vertices').textContent = totalVertices.toLocaleString();
+            document.getElementById('model-faces').textContent = Math.floor(totalFaces).toLocaleString();
+            document.getElementById('model-materials').textContent = materialCount;
+        }
+        
+        // Make functions available globally for viewer.js
+        window.updateModelInfo = updateModelInfo;
+        window.setModelFileSize = function(bytes) {
+            const mb = (bytes / (1024 * 1024)).toFixed(2);
+            document.getElementById('model-filesize').textContent = mb + ' MB';
+        };
+        
+        // Update loading progress
         window.updateLoadingProgress = function(percent) {
             document.getElementById('loading-percentage').textContent = 
                 percent < 100 ? `Loading: ${percent}%` : 'Processing...';

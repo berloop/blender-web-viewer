@@ -1,9 +1,10 @@
+
 /**
  * Blender Web Preview Viewer
  * Main JavaScript file for rendering and controlling the 3D scene
  */
 
-// At the top of your viewer.js file, add this check
+
 if (!window.OrbitControls && THREE.OrbitControls) {
   window.OrbitControls = THREE.OrbitControls;
 }
@@ -15,7 +16,6 @@ if (!window.GLTFLoader && THREE.GLTFLoader) {
 if (!window.DRACOLoader && THREE.DRACOLoader) {
   window.DRACOLoader = THREE.DRACOLoader;
 }
-
 
 window.addEventListener('DOMContentLoaded', function() {
   if (window.location.protocol === 'file:') {
@@ -38,9 +38,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
 // Global variables
 let scene, camera, renderer, controls;
-let mixer,
-  clock,
-  animationActions = [];
+let mixer, clock, animationActions = [];
 let grid, sceneInfo;
 let isPlaying = false;
 let animationDuration = 0;
@@ -80,7 +78,7 @@ function init() {
     })
     .catch((error) => {
       console.log("Error loading scene info:", error);
-      // Continue anyway
+      // Continue anyway...hey..
       sceneTitle.textContent = "Blender Scene";
       sceneStats.textContent = "No scene info available";
     })
@@ -90,7 +88,7 @@ function init() {
     });
 }
 
-// Initialize Three.js scene
+// Initialize Three.js scene with BETTER LIGHTING
 function initScene() {
   console.log("Initializing Three.js scene");
 
@@ -116,9 +114,6 @@ function initScene() {
   viewer.appendChild(renderer.domElement);
 
   try {
-    // Fix for OrbitControls
-    // We need to use the imported OrbitControls differently
-
     controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
@@ -126,7 +121,6 @@ function initScene() {
     console.error("Error creating orbit controls:", e);
     console.log("Attempting alternative orbit controls initialization");
 
-    // Alternative way to create controls if the first method fails
     if (typeof OrbitControls !== "undefined") {
       controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
@@ -136,30 +130,62 @@ function initScene() {
     }
   }
 
-  // Add grid
-  grid = new THREE.GridHelper(10, 10, 0x888888, 0x444444);
+  // Adding... grid
+  grid = new THREE.GridHelper(20, 20, 0x888888, 0x444444);
   scene.add(grid);
 
-  // Add ambient light
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  // Make scene and renderer globally accessible for inspector
+  window.scene = scene;
+  window.renderer = renderer;
+
+  // ENHANCED LIGHTING SETUP - LIT FROM ALL ANGLES
+  
+  // Brighter ambient light for overall illumination
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
   scene.add(ambientLight);
 
-  // Add directional light
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-  directionalLight.position.set(5, 10, 7.5);
-  directionalLight.castShadow = true;
+  // Main directional light (key light) - brighter
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
+  keyLight.position.set(5, 10, 7.5);
+  keyLight.castShadow = true;
+  keyLight.shadow.mapSize.width = 2048;
+  keyLight.shadow.mapSize.height = 2048;
+  keyLight.shadow.camera.near = 0.1;
+  keyLight.shadow.camera.far = 50;
+  keyLight.shadow.camera.left = -10;
+  keyLight.shadow.camera.right = 10;
+  keyLight.shadow.camera.top = 10;
+  keyLight.shadow.camera.bottom = -10;
+  scene.add(keyLight);
 
-  // Configure shadow
-  directionalLight.shadow.mapSize.width = 2048;
-  directionalLight.shadow.mapSize.height = 2048;
-  directionalLight.shadow.camera.near = 0.1;
-  directionalLight.shadow.camera.far = 50;
-  directionalLight.shadow.camera.left = -10;
-  directionalLight.shadow.camera.right = 10;
-  directionalLight.shadow.camera.top = 10;
-  directionalLight.shadow.camera.bottom = -10;
+  // Fill light from the left
+  const fillLight = new THREE.DirectionalLight(0xffffff, 0.8);
+  fillLight.position.set(-5, 5, 5);
+  scene.add(fillLight);
 
-  scene.add(directionalLight);
+  // Back light for rim lighting
+  const backLight = new THREE.DirectionalLight(0xffffff, 0.6);
+  backLight.position.set(0, 5, -5);
+  scene.add(backLight);
+
+  // Additional side lights for full coverage
+  const leftLight = new THREE.DirectionalLight(0xffffff, 0.4);
+  leftLight.position.set(-10, 3, 0);
+  scene.add(leftLight);
+
+  const rightLight = new THREE.DirectionalLight(0xffffff, 0.4);
+  rightLight.position.set(10, 3, 0);
+  scene.add(rightLight);
+
+  // Store original light intensities for lighting control slider
+  scene.traverse((child) => {
+    if (child.isLight && child instanceof THREE.DirectionalLight) {
+      child.userData.originalIntensity = child.intensity;
+    }
+  });
+
+  // Store original ambient light intensity too
+  ambientLight.userData.originalIntensity = ambientLight.intensity;
 
   // Clock for animations
   clock = new THREE.Clock();
@@ -170,17 +196,15 @@ function initScene() {
   // Start animation loop
   animate();
 
-  console.log("Scene initialized");
+  console.log("Scene initialized with enhanced lighting");
 }
 
 // Load the GLTF model
 function loadModel() {
   console.log("Attempting to load model from: scene.glb");
 
-  // Create GLTF loader
   const loader = new GLTFLoader();
 
-  // Optional: Add Draco compression support
   try {
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath("https://www.gstatic.com/draco/v1/decoders/");
@@ -189,7 +213,6 @@ function loadModel() {
     console.warn("Draco compression support not available:", e);
   }
 
-  // First check if the file exists
   fetch("scene.glb")
     .then((response) => {
       if (!response.ok) {
@@ -200,20 +223,28 @@ function loadModel() {
         response.headers.get("content-length"),
         "bytes"
       );
+      
+      // Update file size in model info
+      const fileSize = response.headers.get("content-length");
+      if (fileSize && window.setModelFileSize) {
+        window.setModelFileSize(parseInt(fileSize));
+      }
+      
       return true;
     })
     .then(() => {
-      // Load the model - using .glb format
       loader.load(
         "scene.glb",
         function (gltf) {
           console.log("Model loaded successfully:", gltf);
 
-          // Log scene details
           console.log("Scene contains:");
           gltf.scene.traverse(function (child) {
             if (child.isMesh) {
               console.log("- Mesh:", child.name);
+              // Enable shadows for better lighting
+              child.castShadow = true;
+              child.receiveShadow = true;
             }
             if (child.isLight) {
               console.log("- Light:", child.name);
@@ -223,13 +254,14 @@ function loadModel() {
             }
           });
 
-          // Add the model to the scene
           scene.add(gltf.scene);
-
-          // Center the camera on the model
           centerCameraOnModel(gltf.scene);
 
-          // Set up animations if they exist
+          // Update model information widget
+          if (window.updateModelInfo) {
+            window.updateModelInfo(gltf);
+          }
+
           if (gltf.animations && gltf.animations.length > 0) {
             console.log("Model has animations:", gltf.animations.length);
             mixer = new THREE.AnimationMixer(gltf.scene);
@@ -239,12 +271,10 @@ function loadModel() {
               animationActions.push(action);
             });
 
-            // Set animation duration for the slider
             animationDuration = gltf.animations[0].duration;
             animationSlider.max = animationDuration;
             updateAnimationTime(0);
 
-            // Play the first animation
             if (animationActions.length > 0) {
               animationActions[0].play();
               isPlaying = true;
@@ -260,18 +290,15 @@ function loadModel() {
           }
         },
         function (xhr) {
-          // Progress callback
           const percent = Math.floor((xhr.loaded / xhr.total) * 100);
           console.log(`Loading model: ${percent}% loaded`);
         },
         function (error) {
-          // Error callback
           console.error("Error loading model:", error);
           console.error("Error details:", error.message);
 
           alert("Error loading 3D model - check browser console for details");
 
-          // Remove loading overlay
           const loadingOverlay = document.querySelector(".loading-overlay");
           if (loadingOverlay) {
             loadingOverlay.remove();
@@ -282,19 +309,16 @@ function loadModel() {
     .catch((error) => {
       console.error("Error checking/loading scene.glb:", error);
 
-      // Remove loading overlay and show error
       const loadingOverlay = document.querySelector(".loading-overlay");
       if (loadingOverlay) {
         loadingOverlay.remove();
       }
 
-      // Show a simple placeholder in the scene
       const geometry = new THREE.BoxGeometry(1, 1, 1);
       const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
       const cube = new THREE.Mesh(geometry, material);
       scene.add(cube);
 
-      // Add error text
       const textDiv = document.createElement("div");
       textDiv.style.position = "absolute";
       textDiv.style.top = "50%";
@@ -311,37 +335,25 @@ function loadModel() {
 
 // Center camera on model
 function centerCameraOnModel(model) {
-  // Create a bounding box for the model
   const boundingBox = new THREE.Box3().setFromObject(model);
-
-  // Calculate the center of the bounding box
   const center = new THREE.Vector3();
   boundingBox.getCenter(center);
-
-  // Calculate the size of the bounding box
   const size = new THREE.Vector3();
   boundingBox.getSize(size);
 
-  // Calculate the distance to fit the model in view
   const maxDim = Math.max(size.x, size.y, size.z);
   const fov = camera.fov * (Math.PI / 180);
   let distance = maxDim / (2 * Math.tan(fov / 2));
-
-  // Set a minimum distance
   distance = Math.max(distance, 1);
 
-  // Position the camera
   if (controls) {
     const direction = camera.position.clone().sub(controls.target).normalize();
     camera.position.copy(
       center.clone().add(direction.multiplyScalar(distance * 1.5))
     );
-
-    // Set the controls target to the center of the model
     controls.target.copy(center);
     controls.update();
   } else {
-    // If no controls, just position the camera
     camera.position.set(center.x, center.y + distance, center.z + distance);
     camera.lookAt(center);
   }
@@ -358,17 +370,14 @@ function onWindowResize() {
 function animate() {
   requestAnimationFrame(animate);
 
-  // Update controls if they exist
   if (controls && controls.update) {
     controls.update();
   }
 
-  // Update animation mixer
   if (mixer && isPlaying) {
     const delta = clock.getDelta();
     mixer.update(delta);
 
-    // Update animation slider
     if (animationDuration > 0) {
       const time = mixer.time % animationDuration;
       animationSlider.value = time;
@@ -376,7 +385,6 @@ function animate() {
     }
   }
 
-  // Render scene
   renderer.render(scene, camera);
 }
 
