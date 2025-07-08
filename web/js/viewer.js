@@ -1,10 +1,9 @@
-
 /**
  * Blender Web Preview Viewer
  * Main JavaScript file for rendering and controlling the 3D scene
  */
 
-
+// At the top of your viewer.js file, add this check
 if (!window.OrbitControls && THREE.OrbitControls) {
   window.OrbitControls = THREE.OrbitControls;
 }
@@ -78,7 +77,7 @@ function init() {
     })
     .catch((error) => {
       console.log("Error loading scene info:", error);
-      // Continue anyway...hey..
+      // Continue anyway
       sceneTitle.textContent = "Blender Scene";
       sceneStats.textContent = "No scene info available";
     })
@@ -130,8 +129,8 @@ function initScene() {
     }
   }
 
-  // Adding... grid
-  grid = new THREE.GridHelper(20, 20, 0x888888, 0x444444);
+  // Add grid
+  grid = new THREE.GridHelper(10, 10, 0x888888, 0x444444);
   scene.add(grid);
 
   // Make scene and renderer globally accessible for inspector
